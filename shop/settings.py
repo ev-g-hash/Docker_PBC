@@ -1,21 +1,22 @@
-# shop/settings.py (добавлены настройки для медиа-файлов и нового приложения)
+# shop/settings.py (исправленная версия)
 """
 Django settings for shop project.
 """
 
 import os
 from pathlib import Path
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-your-secret-key-here'
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
 
 # Application definition
 INSTALLED_APPS = [
@@ -26,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main_shop',
-    'goods',  # Добавлено новое приложение
+    'goods',
 ]
 
 MIDDLEWARE = [
@@ -62,8 +63,13 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME', default='shop_db'),
+        'USER': config('DB_USER', default='shop_user'),
+        'PASSWORD': config('DB_PASSWORD', default='shop_password'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432', cast=int),
+        # УБРАЛИ 'charset': 'utf8', так как PostgreSQL использует UTF-8 по умолчанию
     }
 }
 
@@ -91,9 +97,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Media files (для загрузки изображений товаров)
 MEDIA_URL = '/media/'
@@ -101,3 +105,24 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Настройки для Docker
+if DEBUG:
+    STATICFILES_DIRS = [
+        BASE_DIR / 'static',
+    ]
+
+# CORS настройки (если понадобятся)
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS', 
+    default='http://localhost:3000,http://127.0.0.1:3000',
+    cast=Csv()
+)
+
+# Email настройки (опционально)
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = config('EMAIL_HOST', default='')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')

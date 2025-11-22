@@ -1,0 +1,35 @@
+# docker-compose.simple.yml - упрощенная версия для разработки
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: shop_db
+      POSTGRES_USER: shop_user
+      POSTGRES_PASSWORD: shop_password
+    ports:
+      - "5432:5432"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-your-secret-key-here
+      - DB_NAME=shop_db
+      - DB_USER=shop_user
+      - DB_PASSWORD=shop_password
+      - DB_HOST=db
+      - DB_PORT=5432
+
+volumes:
+  postgres_data:
