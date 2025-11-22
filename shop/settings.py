@@ -1,4 +1,4 @@
-# shop/settings.py (исправленная версия)
+# shop/settings.py (исправленный для продакшна)
 """
 Django settings for shop project.
 """
@@ -14,9 +14,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
+# ВАЖНО: Для продакшна указываем правильные хосты
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS', 
+    default='localhost,127.0.0.1,0.0.0.0',
+    cast=Csv()
+)
 
 # Application definition
 INSTALLED_APPS = [
@@ -69,7 +74,6 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD', default='shop_password'),
         'HOST': config('DB_HOST', default='localhost'),
         'PORT': config('DB_PORT', default='5432', cast=int),
-        # УБРАЛИ 'charset': 'utf8', так как PostgreSQL использует UTF-8 по умолчанию
     }
 }
 
@@ -106,7 +110,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Настройки для Docker
+# Настройки для Docker и продакшна
 if DEBUG:
     STATICFILES_DIRS = [
         BASE_DIR / 'static',
@@ -115,7 +119,7 @@ if DEBUG:
 # CORS настройки (если понадобятся)
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS', 
-    default='http://localhost:3000,http://127.0.0.1:3000',
+    default='http://localhost:3000,http://127.0.0.1:3000,http://0.0.0.0:3000',
     cast=Csv()
 )
 
@@ -126,3 +130,18 @@ EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+
+# Настройки для продакшна
+if not DEBUG:
+    # Отключаем debug режим
+    DEBUG = False
+    
+    # Настройки безопасности для продакшна
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    X_FRAME_OPTIONS = 'DENY'

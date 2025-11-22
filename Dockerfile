@@ -1,4 +1,4 @@
-# Dockerfile (оптимизированная версия)
+# Dockerfile (с entrypoint для продакшна)
 FROM python:3.11-slim
 
 # Установка системных зависимостей
@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     g++ \
     libpq-dev \
     curl \
+    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
 # Создание рабочей директории
@@ -26,5 +27,9 @@ COPY . .
 RUN useradd --create-home --shell /bin/bash app
 USER app
 
-# Команда по умолчанию
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Копирование entrypoint скрипта
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Команда по умолчанию - запуск через entrypoint
+CMD ["/app/entrypoint.sh"]
