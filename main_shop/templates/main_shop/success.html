@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block modal %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h2 class="card-title text-success mb-3">Заявка успешно отправлена!</h2>
+                    <p class="card-text lead">{{ success_message }}</p>
+                    {% if user_name %}
+                        <p class="text-muted">Спасибо, {{ user_name }}!</p>
+                    {% endif %}
+                    <div class="mt-4">
+                        <a href="/" class="btn btn-primary btn-lg me-3">
+                            <i class="bi bi-house-fill"></i> Вернуться на главную
+                        </a>
+                        <a href="/goods/" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-grid-fill"></i> Посмотреть каталог
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock modal %}
+

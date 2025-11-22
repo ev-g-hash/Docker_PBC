@@ -1,0 +1,58 @@
+<!-- templates/shop/index.html (обновленный с футером) -->
+{% extends "base.html" %}
+
+{% block index %}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Добро пожаловать в магазин эксклюзивных подарков!</h1>
+            <div class="jumbotron">
+                <p class="lead">Это главная страница нашего интернет-магазина. Здесь вы найдете лучшие подарочные изделия.</p>
+                <hr class="my-4">
+                <p>Мы предлагаем широкий ассортимент эксклюзивных изделий на заказ.</p>
+                <div class="d-grid gap-2 d-md-block">
+                    <a class="btn btn-primary btn-lg me-2" href="{% url "goods:catalog" %}" role="button">Посмотреть каталог</a>
+                    <a class="btn btn-primary btn-lg me-2" href="{% url "forms" %}" role="button">Связаться с нами, задать вопрос или подать заявку</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Дополнительная информация -->
+    <div class="row mt-5">
+        <div class="col-md-4 text-center mb-4">
+            <div class="card border-0">
+                <div class="card-body">
+                    <i class="bi bi-shop display-4 text-primary mb-3"></i>
+                    <h5 class="card-title">Широкий ассортимент</h5>
+                    <p class="card-text">Большой выбор изделий различных категорий</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-center mb-4">
+            <div class="card border-0">
+                <div class="card-body">
+                    <i class="bi bi-truck display-4 text-primary mb-3"></i>
+                    <h5 class="card-title">Быстрая доставка</h5>
+                    <p class="card-text">Доставляем изделия в кратчайшие сроки</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-center mb-4">
+            <div class="card border-0">
+                <div class="card-body">
+                    <i class="bi bi-shield-check display-4 text-primary mb-3"></i>
+                    <h5 class="card-title">Гарантия качества работы</h5>
+                    <p class="card-text">Гарантируем качество нашей работы</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock index %}
+   
+
+    
+

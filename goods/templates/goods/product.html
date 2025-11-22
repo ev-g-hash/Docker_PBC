@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+    
+{% block product %}
+
+<div class="container mt-5">
+    <!-- Хлебные крошки -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url "index" %}">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{% url "goods:catalog" %}">Каталог</a></li>
+            <li class="breadcrumb-item"><a href="{% url "goods:category_products" product.category.id %}">{{ product.category.name }}</a></li>
+            <li class="breadcrumb-item active">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <!-- Детали товара -->
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Улучшенное отображение изображения с отступами -->
+            <div class="product-detail-image-container">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="img-fluid rounded product-detail-image" 
+                         alt="{{ product.name }}">
+                {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center rounded product-detail-image" 
+                         style="height: 400px;">
+                        <span class="text-muted fs-4">Нет изображения</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h1 class="mb-3">{{ product.name }}</h1>
+            <p class="text-muted mb-3">Категория: <a href="/goods/category/{{ product.category.id }}/">{{ product.category.name }}</a></p>
+            <div class="mb-4">
+                <h5>Описание:</h5>
+                <p>{{ product.description|linebreaks }}</p>
+            </div>
+            <div class="d-grid gap-2">
+                <a href="/forms/?product={{ product.id }}" class="btn btn-primary btn-lg">
+                    Заказать товар
+                </a>
+                <a href="/goods/" class="btn btn-outline-secondary">Вернуться к каталогу</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Похожие товары -->
+    {% if related_products %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4">Похожие товары</h3>
+                <div class="row">
+                    {% for related_product in related_products %}
+                        <div class="col-md-3 mb-3">
+                            <div class="card h-100 shadow-sm">
+                                <div class="product-image-container">
+                                    {% if related_product.image %}
+                                        <img src="{{ related_product.image.url }}" class="product-image-v4" 
+                                             alt="{{ related_product.name }}">
+                                    {% else %}
+                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                            <span class="text-muted">Нет изображения</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ related_product.name }}</h6>
+                                    <p class="card-text">{{ related_product.description|truncatewords:10 }}</p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="{% url 'goods:product_detail' related_product.id %}" 
+                                       class="btn btn-outline-primary btn-sm w-100">Подробнее</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock product %}
+
