@@ -27,4 +27,4 @@ RUN useradd --create-home --shell /bin/bash app
 USER app
 
 # Команда по умолчанию
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "gunicorn", "0.0.0.0:8000"]

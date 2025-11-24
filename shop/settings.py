@@ -6,17 +6,22 @@ Django settings for shop project.
 import os
 from pathlib import Path
 from decouple import config, Csv
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here')
+# Database
+DATABASE_URL = config('amvera-pihtulovevgeny-cnpg-pbc-psql-rw')
+DATABASES = {
+    'default': dj_database_url.parse(DATABASE_URL)
+}
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+# Security
+DEBUG = config('DEBUG', default=False, cast=bool)
+SECRET_KEY = config('SECRET_KEY')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost', cast=lambda v: [s.strip() for s in v.split(',')])
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
 
 # Application definition
 INSTALLED_APPS = [
@@ -64,12 +69,11 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='shop_db'),
-        'USER': config('DB_USER', default='shop_user'),
-        'PASSWORD': config('DB_PASSWORD', default='shop_password'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432', cast=int),
-        # УБРАЛИ 'charset': 'utf8', так как PostgreSQL использует UTF-8 по умолчанию
+        'NAME': config('DB_NAME', default='postgres'),
+        'USER': config('DB_USER', default='postgres'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
@@ -96,7 +100,7 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Media files (для загрузки изображений товаров)
